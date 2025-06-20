@@ -37,11 +37,34 @@ public class CryptoTool {
         }
         return hexString.toString();
     }
+
+    public static String generateSHA256HashFromFile (String filePath) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        // Try to read the file
+        try (FileInputStream fis = new FileInputStream(filePath)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            // Read the file in chunks
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                // Update the digest with the bytes read
+                digest.update(buffer, 0, bytesRead);
+            }
+        }
+        byte[] hash = digest.digest();
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Welcome to the CryptoTool ---");
         System.out.println("Choose an option:");
         System.out.println("1. Generate SHA-256 Hash of Text");
+        System.out.println("2. Generate SHA-256 Hash of File");
         System.out.println("0. Exit");
 
         int choice = -1;
@@ -57,6 +80,17 @@ public class CryptoTool {
                         try {
                             String hash = generateSHA256Hash(textToHash.getBytes());
                             System.out.println("SHA-256 Hash: " + hash);
+                        } catch (NoSuchAlgorithmException e) {
+                            System.out.println("Error generating hash: " + e.getMessage());
+                        } break;
+                    case 2:
+                        System.out.println("Enter the file path to hash using SHA-256:");
+                        String filePath = scanner.nextLine();
+                        try {
+                            String fileHash = generateSHA256HashFromFile(filePath);
+                            System.out.println("SHA-256 Hash of file: " + fileHash);
+                        } catch (IOException e) {
+                            System.out.println("Error reading file: " + e.getMessage());
                         } catch (NoSuchAlgorithmException e) {
                             System.out.println("Error generating hash: " + e.getMessage());
                         } break;
