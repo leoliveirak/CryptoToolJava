@@ -73,6 +73,16 @@ public class CryptoTool {
         new SecureRandom().nextBytes(iv);
         return new IvParameterSpec(iv);
     }
+
+    public static byte[] encryptAES(byte[] data, SecretKey key, IvParameterSpec iv) throws Exception {
+        // Get a Cipher instance for AES in CBC mode with PKCS7Padding
+        // The "BC" at the end indicates that we are preferring the Bouncy Castle implementation
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        // Initialize the cipher for encryption with the provided key and IV
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        // Encrypt the data
+        return cipher.doFinal(data);
+    }
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Welcome to the CryptoTool ---");
@@ -117,6 +127,22 @@ public class CryptoTool {
                             System.out.println("You can use these keys for AES encryption/decryption.");
                         } catch (NoSuchAlgorithmException e) {
                             System.out.println("Error generating AES key: " + e.getMessage());
+                        } break;
+                    case 4:
+                        System.out.print("Text to encrypt: ");
+                        String plainText = scanner.nextLine();
+                        System.out.print("Enter AES Key (Base64): ");
+                        String keyB64 = scanner.nextLine();
+                        System.out.print("Enter IV (Base64): ");
+                        String ivB64 = scanner.nextLine();
+
+                        try {
+                            SecretKey aesKey = new SecretKeySpec(Base64.getDecoder().decode(keyB64), "AES");
+                            IvParameterSpec iv = new IvParameterSpec(Base64.getDecoder().decode(ivB64));
+                            byte[] encryptedData = encryptAES(plainText.getBytes(), aesKey, iv);
+                            System.out.println("Encrypted Data (Base64): " + Base64.getEncoder().encodeToString(encryptedData));
+                        } catch (Exception e) {
+                            System.out.println("Error during encryption: " + e.getMessage());
                         } break;
                     case 0:
                         System.out.println("Exiting the CryptoTool. Bye!");
