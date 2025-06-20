@@ -83,6 +83,15 @@ public class CryptoTool {
         // Encrypt the data
         return cipher.doFinal(data);
     }
+
+    public static byte[] decryptAES(byte[] encryptedData, SecretKey key, IvParameterSpec iv) throws Exception {
+        // Get a Cipher instance for AES in CBC mode with PKCS7Padding
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        // Initialize the cipher for decryption with the provided key and IV
+        cipher.init(Cipher.DECRYPT_MODE, key, iv);
+        // Decrypt the data
+        return cipher.doFinal(encryptedData);
+    }
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Welcome to the CryptoTool ---");
@@ -90,6 +99,8 @@ public class CryptoTool {
         System.out.println("1. Generate SHA-256 Hash of Text");
         System.out.println("2. Generate SHA-256 Hash of File");
         System.out.println("3. Generate AES and IV key");
+        System.out.println("4. Encrypt Text using AES");
+        System.out.println("5. Decrypt Text using AES");
         System.out.println("0. Exit");
 
         int choice = -1;
@@ -143,6 +154,22 @@ public class CryptoTool {
                             System.out.println("Encrypted Data (Base64): " + Base64.getEncoder().encodeToString(encryptedData));
                         } catch (Exception e) {
                             System.out.println("Error during encryption: " + e.getMessage());
+                        } break;
+                    case 5:
+                        System.out.print("Text to decrypt: ");
+                        String encryptedText = scanner.nextLine();
+                        System.out.print("Enter AES Key (Base64): ");
+                        String decryptKeyB64 = scanner.nextLine();
+                        System.out.print("Enter IV (Base64): ");
+                        String decryptIvB64 = scanner.nextLine();
+
+                        try {
+                            SecretKey aesKey = new SecretKeySpec(Base64.getDecoder().decode(decryptKeyB64), "AES");
+                            IvParameterSpec iv = new IvParameterSpec(Base64.getDecoder().decode(decryptIvB64));
+                            byte[] decryptedData = decryptAES(Base64.getDecoder().decode(encryptedText), aesKey, iv);
+                            System.out.println("Decrypted Data: " + new String(decryptedData));
+                        } catch (Exception e) {
+                            System.out.println("Error during decryption: " + e.getMessage());
                         } break;
                     case 0:
                         System.out.println("Exiting the CryptoTool. Bye!");
