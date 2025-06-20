@@ -22,10 +22,26 @@ public class CryptoTool {
         // Add Bouncy Castle as a security provider
         Security.addProvider(new BouncyCastleProvider());
     }
+
+    public static String generateSHA256Hash(byte[] data) throws NoSuchAlgorithmException {
+        // Generate SHA-256 hash of the input data
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        // Update the digest with the input data
+        byte[] hash = digest.digest(data);
+        StringBuilder hexString = new StringBuilder();
+        // Convert byte array to hex string
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Welcome to the CryptoTool ---");
         System.out.println("Choose an option:");
+        System.out.println("1. Generate SHA-256 Hash of Text");
         System.out.println("0. Exit");
 
         int choice = -1;
@@ -35,6 +51,15 @@ public class CryptoTool {
                 choice = Integer.parseInt(scanner.nextLine());
 
                 switch (choice) {
+                    case 1:
+                        System.out.println("Enter th text to hash using SHA-256:");
+                        String textToHash = scanner.nextLine();
+                        try {
+                            String hash = generateSHA256Hash(textToHash.getBytes());
+                            System.out.println("SHA-256 Hash: " + hash);
+                        } catch (NoSuchAlgorithmException e) {
+                            System.out.println("Error generating hash: " + e.getMessage());
+                        } break;
                     case 0:
                         System.out.println("Exiting the CryptoTool. Bye!");
                         break;
