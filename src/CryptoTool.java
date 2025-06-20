@@ -59,12 +59,27 @@ public class CryptoTool {
         }
         return hexString.toString();
     }
+
+    public static SecretKey generateAESkey() throws NoSuchAlgorithmException {
+        // Generate a new AES key
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(256); // Use 256-bit AES
+        return keyGen.generateKey();
+    }
+
+    public static IvParameterSpec generateIV() {
+        // Generate a new Initialization Vector (IV) for AES
+        byte[] iv = new byte[16]; // AES block size is 16 bytes
+        new SecureRandom().nextBytes(iv);
+        return new IvParameterSpec(iv);
+    }
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Welcome to the CryptoTool ---");
         System.out.println("Choose an option:");
         System.out.println("1. Generate SHA-256 Hash of Text");
         System.out.println("2. Generate SHA-256 Hash of File");
+        System.out.println("3. Generate AES and IV key");
         System.out.println("0. Exit");
 
         int choice = -1;
@@ -72,7 +87,6 @@ public class CryptoTool {
             System.out.println("\nYour choice: ");
             try {
                 choice = Integer.parseInt(scanner.nextLine());
-
                 switch (choice) {
                     case 1:
                         System.out.println("Enter th text to hash using SHA-256:");
@@ -94,6 +108,16 @@ public class CryptoTool {
                         } catch (NoSuchAlgorithmException e) {
                             System.out.println("Error generating hash: " + e.getMessage());
                         } break;
+                    case 3:
+                        try {
+                            SecretKey aesKey = generateAESkey();
+                            IvParameterSpec iv = generateIV();
+                            System.out.println("Generated AES Key: " + Base64.getEncoder().encodeToString(aesKey.getEncoded()));
+                            System.out.println("Generated IV (Base64): " + Base64.getEncoder().encodeToString(iv.getIV()));
+                            System.out.println("You can use these keys for AES encryption/decryption.");
+                        } catch (NoSuchAlgorithmException e) {
+                            System.out.println("Error generating AES key: " + e.getMessage());
+                        } break;
                     case 0:
                         System.out.println("Exiting the CryptoTool. Bye!");
                         break;
@@ -107,7 +131,6 @@ public class CryptoTool {
                 System.out.println("An error occurred: " + e.getMessage());
             }
         }
-
         scanner.close();
     }
 }
