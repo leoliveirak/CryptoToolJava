@@ -66,7 +66,6 @@ Siga os passos abaixo para configurar e rodar o `CryptoTool` em seu ambiente.
 
 * **Git Instalado:** Verifique com `git --version`. Se não tiver, baixe em [git-scm.com](https://git-scm.com/).
 * **Java Development Kit (JDK) 17:** Certifique-se de ter o JDK 17 instalado e configurado em suas variáveis de ambiente. Verifique com `java -version` e `javac -version`.
-* **Conexão à Internet:** Para baixar a biblioteca Bouncy Castle.
 
 ### Clonagem do Repositório
 
@@ -79,26 +78,6 @@ Siga os passos abaixo para configurar e rodar o `CryptoTool` em seu ambiente.
     ```bash
     cd CryptoToolJava
     ```
-
-### Configuração da Dependência (Bouncy Castle)
-
-1.  **Baixe o JAR do Bouncy Castle:**
-    * Acesse o site oficial do Bouncy Castle: [https://www.bouncycastle.org/latest_releases.html](https://www.bouncycastle.org/latest_releases.html)
-    * Baixe o arquivo `bcprov-jdk18on-1.81.jar`. **Importante:** Mesmo usando JDK 17, o `jdk18on` indica compatibilidade com JDK 18 e versões *onwards* (incluindo 17 e anteriores compatíveis).
-
-2.  **Crie a Pasta `lib`:**
-    * No diretório raiz do seu projeto (`CryptoToolJava`), crie uma nova pasta chamada `lib`.
-    * Exemplo da estrutura esperada:
-        ```
-        CryptoToolJava/
-        ├── src/
-        │   └── CryptoTool.java
-        └── lib/
-        ```
-
-3.  **Copie o JAR para `lib`:**
-    * Mova o arquivo `bcprov-jdk18on-1.81.jar` que você baixou para dentro da pasta `lib`.
-    * Exemplo: `CryptoToolJava/lib/bcprov-jdk18on-1.81.jar`
 
 ### Compilação e Execução
 
